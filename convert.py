@@ -11,7 +11,7 @@ def read_audio_files(audio_directory):
     for file_name in os.listdir(audio_directory):
         # Check if the file is an mp3 file
         if file_name.endswith('.mp3'):
-            audio_files.append(file_name)
+            audio_files.append(file_name)               
 
     return audio_files
 
