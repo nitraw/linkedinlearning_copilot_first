@@ -1,19 +1,23 @@
-import os
+from pathlib import Path
 
-#create a function that read audio file in mp3 format
-#the audio directory and return the list of audio files in the directory
+import yaml
+from mutagen.easyid3 import EasyID3
 
 def read_audio_files(audio_directory):
-
+    audio_path = Path(audio_directory)
     audio_files = []
 
-    # Iterate through the files in the directory
-    for file_name in os.listdir(audio_directory):
-        # Check if the file is an mp3 file
-        if file_name.endswith('.mp3'):
-            audio_files.append(file_name)               
+    for file_path in sorted(audio_path.glob('*.mp3')):
+        tags = EasyID3(file_path)
+        metadata = {
+            key: values[0] if len(values) == 1 else values
+            for key, values in tags.items()
+        }
+        metadata['file'] = f'/{audio_path.name}/{file_path.name}'
+        audio_files.append(metadata)
 
     return audio_files
 
-print(read_audio_files('audio'))
-    
+if __name__ == '__main__':
+    print(yaml.safe_dump(read_audio_files('audio'), sort_keys=False))
+
